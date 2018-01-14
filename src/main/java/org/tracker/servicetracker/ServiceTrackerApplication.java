@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @SpringBootApplication
@@ -36,13 +35,16 @@ public class ServiceTrackerApplication {
 
     @GetMapping("/service")
     public boolean isExecuted(@RequestParam("service-name") String serviceName, @RequestParam("service-number") Integer serviceNumber){
+      List<ServiceStatus> testStatusList = serviceStatusRepository.findAll();
 	    List<ServiceStatus> serviceStatusList = serviceStatusRepository.findByParentServiceIdAndStatus(serviceName, true);
 	    boolean status=serviceStatusList.size()==serviceNumber?true:false;
 	    if(status){
-	        List<ServiceStatus> serviceStatuseListOfServiceId= serviceStatusRepository.findByServiceIdAndStatus(serviceName, false);
-	        serviceStatuseListOfServiceId.forEach(s-> s.setStatus(true));
-	        serviceStatusRepository.save(serviceStatuseListOfServiceId);
-        }
+        List<ServiceStatus> serviceStatuseListOfServiceId = serviceStatusRepository.findByServiceIdAndStatus(serviceName, false);
+        serviceStatuseListOfServiceId.forEach(s -> s.setStatus(true));
+        serviceStatusRepository.save(serviceStatuseListOfServiceId);
+        serviceStatusRepository.delete(serviceStatusList);
+      }
+
 	    return status;
     }
 
