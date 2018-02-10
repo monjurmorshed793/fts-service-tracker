@@ -36,6 +36,9 @@ public class ServiceTrackerApplication {
     @GetMapping("/service")
     public boolean isExecuted(@RequestParam("service-name") String serviceName, @RequestParam("service-number") Integer serviceNumber){
       List<ServiceStatus> testStatusList = serviceStatusRepository.findAll();
+      if(serviceName.equals("serviceA2")){
+        boolean found=true;
+      }
 	    List<ServiceStatus> serviceStatusList = serviceStatusRepository.findByParentServiceIdAndStatus(serviceName, true);
 	    boolean status=serviceStatusList.size()==serviceNumber?true:false;
 	    if(status){
